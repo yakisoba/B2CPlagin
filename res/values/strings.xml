@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Birth2CalPlagin!</string>
+    <string name="app_name_base">Birth2Cal</string>
     <string name="app_name">Birth2Cal_Plagin</string>
 </resources>

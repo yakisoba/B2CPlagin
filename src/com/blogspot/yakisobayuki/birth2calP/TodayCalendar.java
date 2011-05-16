@@ -14,7 +14,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.provider.ContactsContract.Data;
-import android.widget.RemoteViews;
 
 public class TodayCalendar extends BroadcastReceiver {
 	// 今日の日付取得
@@ -79,6 +78,7 @@ public class TodayCalendar extends BroadcastReceiver {
 					String type = c1.getString(c1.getColumnIndex(Event.TYPE));
 
 					int yyyy, mm, dd;
+					// 年、月、日に分けint型へキャスト
 					yyyy = Integer.parseInt(date.substring(0, 4));
 					mm = Integer.parseInt(date.substring(5, 7));
 					dd = Integer.parseInt(date.substring(8, 10));
@@ -86,13 +86,13 @@ public class TodayCalendar extends BroadcastReceiver {
 					if (mm == mMonth + 1 && dd == mDay) {
 						if (Integer.parseInt(type) == 1) {
 							Strings strings = new Strings();
-							strings.putStrings(name, "ãLîOì˙", (mYear - yyyy)
-									+ "é¸îN");
+							strings.putStrings(name, "記念日", (mYear - yyyy)
+									+ "周年");
 							mList.add(strings);
 						} else if (Integer.parseInt(type) == 3) {
 							Strings strings = new Strings();
-							strings.putStrings(name, "íaê∂ì˙", (mYear - yyyy)
-									+ "çŒ");
+							strings.putStrings(name, "誕生日", (mYear - yyyy)
+									+ "歳");
 							mList.add(strings);
 						}
 					}
@@ -107,7 +107,19 @@ public class TodayCalendar extends BroadcastReceiver {
 	}
 
 	public class BirthNotification {
+
 		public void putNotice(Context context) {
+			String value = null;
+
+			for (Strings obj : mList) {
+				if (mList.indexOf(obj) == 0) {
+					value = obj.getName() + "\t" + obj.getType() + "\t"
+							+ obj.getAge();
+				} else {
+					value = value + "\t\t他" + (mList.size() - 1) + "件";
+					break;
+				}
+			}
 
 			NotificationManager nm = (NotificationManager) context
 					.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -119,38 +131,10 @@ public class TodayCalendar extends BroadcastReceiver {
 					intent, 0);
 			notification.contentIntent = contentIntent;
 
-			RemoteViews contentView = new RemoteViews("com.test",
-					R.layout.statusview);
-			contentView.setImageViewResource(R.id.image, R.drawable.icon);
-			for (Strings obj : mList) {
-				switch (mList.indexOf(obj)) {
-				case 0:
-					contentView.setTextViewText(R.id.name1, obj.getName());
-					contentView.setTextViewText(R.id.type1, obj.getType());
-					contentView.setTextViewText(R.id.age1, obj.getAge());
-					break;
-				case 1:
-					contentView.setTextViewText(R.id.name2, obj.getName());
-					contentView.setTextViewText(R.id.type2, obj.getType());
-					contentView.setTextViewText(R.id.age2, obj.getAge());
-					break;
-				case 2:
-					if (mList.size() <= 3) {
-						contentView.setTextViewText(R.id.name3, obj.getName());
-						contentView.setTextViewText(R.id.type3, obj.getType());
-						contentView.setTextViewText(R.id.age3, obj.getAge());
-					} else {
-						contentView.setTextViewText(R.id.name3,
-								"ëº" + (mList.size() - 2) + "åè");
-					}
-					break;
+			notification.setLatestEventInfo(context,
+					context.getString(R.string.app_name_base), value,
+					contentIntent);
 
-				default:
-					break;
-				}
-			}
-
-			notification.contentView = contentView;
 			nm.notify(R.string.app_name, notification);
 		}
 

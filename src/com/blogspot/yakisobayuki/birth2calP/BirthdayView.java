@@ -1,9 +1,9 @@
 package com.blogspot.yakisobayuki.birth2calP;
 
+import com.blogspot.yakisobayuki.birth2calP.TodayCalendar.BirthNotification;
+
 import android.app.Activity;
 import android.os.Bundle;
-
-import com.blogspot.yakisobayuki.birth2calP.TodayCalendar.BirthNotification;
 
 public class BirthdayView extends Activity {
 	/** Called when the activity is first created. */
