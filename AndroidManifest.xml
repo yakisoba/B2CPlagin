@@ -2,24 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.blogspot.yakisobayuki.birth2calP" android:versionCode="1"
 	android:versionName="1.0">
+	<uses-sdk android:minSdkVersion="7" />
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 		<activity android:name=".Birth2CalPlagin" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="com.blogspot.yakisobayuki.birth2cal2.category" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".BirthdayView" android:label="@string/app_name">
-		</activity>
-		<receiver android:name=".TodayCalendar">
+		<activity android:name=".TodayBirthday" android:label="@string/app_name" />
+		<receiver android:name=".CalendarReceiver">
 			<intent-filter>
-				<action android:name="com.blogspot.yakisobayuki.birth2calP" />
+				<action android:name="Birth2cal_notification" />
+				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</receiver>
-
 	</application>
-	<uses-sdk android:minSdkVersion="7" />
 
 	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
 </manifest>

@@ -14,8 +14,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.provider.ContactsContract.Data;
+import android.util.Log;
 
-public class TodayCalendar extends BroadcastReceiver {
+public class CalendarReceiver extends BroadcastReceiver {
 	// 今日の日付取得
 	final Calendar mCalendar = Calendar.getInstance();
 	final int mYear = mCalendar.get(Calendar.YEAR);
@@ -50,8 +51,12 @@ public class TodayCalendar extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		Log.d("test", "receive");
+
 		String action = intent.getAction();
-		if (!"Birth2CalPlagin".equals(action)) {
+		Log.d("test", action);
+
+		if (!"Birth2cal_notification".equals(action)) {
 			return;
 		}
 
@@ -68,6 +73,8 @@ public class TodayCalendar extends BroadcastReceiver {
 
 		Cursor c1 = context.getContentResolver().query(uri, projection,
 				selection, selectionArgs, null);
+
+		Log.d("test", Integer.toString(c1.getCount()));
 
 		if (c1 != null) {
 			try {
@@ -86,11 +93,13 @@ public class TodayCalendar extends BroadcastReceiver {
 					if (mm == mMonth + 1 && dd == mDay) {
 						if (Integer.parseInt(type) == 1) {
 							Strings strings = new Strings();
+							Log.d("test", name);
 							strings.putStrings(name, "記念日", (mYear - yyyy)
 									+ "周年");
 							mList.add(strings);
 						} else if (Integer.parseInt(type) == 3) {
 							Strings strings = new Strings();
+							Log.d("test", name);
 							strings.putStrings(name, "誕生日", (mYear - yyyy)
 									+ "歳");
 							mList.add(strings);
@@ -113,29 +122,32 @@ public class TodayCalendar extends BroadcastReceiver {
 
 			for (Strings obj : mList) {
 				if (mList.indexOf(obj) == 0) {
-					value = obj.getName() + "\t" + obj.getType() + "\t"
+					value = obj.getName() + "¥t" + obj.getType() + "¥t"
 							+ obj.getAge();
 				} else {
-					value = value + "\t\t他" + (mList.size() - 1) + "件";
+					value = value + "¥t¥t他" + (mList.size() - 1) + "件";
 					break;
 				}
 			}
 
-			NotificationManager nm = (NotificationManager) context
-					.getSystemService(Context.NOTIFICATION_SERVICE);
-			Notification notification = new Notification(R.drawable.icon, "",
-					System.currentTimeMillis());
+			if (value != null) {
 
-			Intent intent = new Intent(context, BirthdayView.class);
-			PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-					intent, 0);
-			notification.contentIntent = contentIntent;
+				NotificationManager nm = (NotificationManager) context
+						.getSystemService(Context.NOTIFICATION_SERVICE);
+				Notification notification = new Notification(R.drawable.icon,
+						"", System.currentTimeMillis());
 
-			notification.setLatestEventInfo(context,
-					context.getString(R.string.app_name_base), value,
-					contentIntent);
+				Intent intent = new Intent(context, TodayBirthday.class);
+				PendingIntent contentIntent = PendingIntent.getActivity(
+						context, 0, intent, 0);
+				notification.contentIntent = contentIntent;
 
-			nm.notify(R.string.app_name, notification);
+				notification.setLatestEventInfo(context,
+						context.getString(R.string.app_name), value,
+						contentIntent);
+
+				nm.notify(R.string.app_name, notification);
+			}
 		}
 
 		public void removeNotice(Context context) {
